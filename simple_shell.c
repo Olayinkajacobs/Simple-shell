@@ -7,13 +7,21 @@
 
 #define MAX_COMMAND_LENGTH 100
 
-void display_prompt()
+/**
+ * display_prompt - Display the shell prompt.
+ */
+void display_prompt(void)
 {
-  char prompt[] = "#cishard>$ ";
+  char prompt[] = "#cishard$ ";
   write(STDOUT_FILENO, prompt, sizeof(prompt) - 1);
 }
 
-int main()
+/**
+ * main - Entry point of the shell program.
+ *
+ * Return: Always 0.
+ */
+int main(void)
 {
   char command[MAX_COMMAND_LENGTH];
 
@@ -23,7 +31,7 @@ int main()
 
     if (fgets(command, sizeof(command), stdin) == NULL)
     {
-      // Handle Ctrl+D (End of File)
+      /* Handle Ctrl+D (End of File) */
       write(STDOUT_FILENO, "\nExiting\n", 9);
       break;
     }
@@ -33,7 +41,7 @@ int main()
     pid_t pid = fork();
 
     if (pid == 0)
-    { // Child process
+    { /* Child process */
       if (strcmp(command, "ls") == 0)
       {
         write(STDOUT_FILENO, "./shell: No such file or directory\n", 35);
@@ -66,12 +74,12 @@ int main()
       }
     }
     else if (pid > 0)
-    { // Parent process
+    { /* Parent process */
       int status;
       waitpid(pid, &status, 0);
     }
     else
-    { // Fork error
+    { /* Fork error */
       char fork_error[] = "Fork error\n";
       write(STDERR_FILENO, fork_error, sizeof(fork_error) - 1);
       exit(EXIT_FAILURE);
